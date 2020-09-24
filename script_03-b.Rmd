@@ -58,7 +58,41 @@ d) Write down some thoughts about what might explain these increases and decreas
 
 See [here](https://rpubs.com/dkane/week-3) for my answers. No need to copy exactly what I have done! Make yours better.
 
+```{r}
 
+sep_desc <- left_join(sep_old, sep_new, 
+                   by = c("id","title", "name", "department"), 
+                   suffix = c("_old","_new")) %>%
+  mutate(u_grad_diff = u_grad_new - u_grad_old) %>%
+  arrange(desc(u_grad_diff)) %>%
+  slice(1:5)
+
+sep_asc <- left_join(sep_old, sep_new, 
+                   by = c("id","title", "name", "department"), 
+                   suffix = c("_old","_new")) %>%
+  mutate(u_grad_diff = u_grad_new - u_grad_old) %>%
+  arrange((u_grad_diff)) %>%
+  slice(1:5)
+
+gt(sep_asc) %>%
+  tab_header(title = "Courses with Greatest")
+
+gt(sep_desc)
+
+```
+
+```{r}
+
+sep_5 <- rbind(sep_asc,sep_desc)
+  
+sep_5 %>%
+  ggplot(aes(x = fct_reorder(title, u_grad_diff), y = u_grad_diff)) +
+  geom_col() +
+  coord_flip() +
+  labs(x = "Class", "Change in Enrollment", 
+       "Courses with Greatest Increase or Decrease in Enrollment")
+
+```
 
 ## Scene 2
 
